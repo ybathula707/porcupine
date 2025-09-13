@@ -3,16 +3,26 @@ from langgraph.prebuilt import create_react_agent
 from langgraph_supervisor import create_supervisor
 
 def repo_analyzer(repo_name: str):
-    """Book a hotel"""
+    """List out the team members from a certain team"""
     return f"Successfully booked a stay at {repo_name}."
 
-def query_directory_users(team_name: str):
-    """Book a flight"""
-    return f"Successfully booked a flight from {team_name} )."
+def list_team_users(team_name: str):
+    """List out the team members from a certain specific team, for example Frontend Engineering"""
+    # TODO: query from database for users of particular team
+    team_members = ['Alice Johnson', 'Bob Carter', 'Charlie Nguyen', 'Diana Brooks']
 
-def query_directory_team(team_name: str):
-    """Book a flight"""
-    return f"Successfully booked a flight from {team_name} )."
+    return f"These are the members from team {team_name}:{', '.join(team_members)}."
+
+def list_teams():
+    """Returns all available teams"""
+    teams = ['Frontend Engineering', 'Backend Engineering']
+    print('TEST')
+    print(', '.join(teams))
+    return f"The list of all teams in the company are {', '.joins(teams)}"
+
+def show_team(team_name: str):
+    """Gives a description for a specific team"""
+    return f"{team_name} "
 
 
 repo_assistant = create_react_agent(
@@ -24,17 +34,17 @@ repo_assistant = create_react_agent(
 
 directory_assistant = create_react_agent(
     model="openai:gpt-4o",
-    tools=[query_directory_users,query_directory_team],
-    prompt="You are a hotel booking assistant",
-    name="hotel_assistant"
+    tools=[list_team_users, list_teams],
+    prompt="You are a directory assistant who have knowledge of the available teams, team functions, and members",
+    name="directory_assistant"
 )
 
 supervisor = create_supervisor(
-    agents=[repo_assistant, directory_assistant],
+    agents=[directory_assistant],
     model=ChatOpenAI(model="gpt-4o"),
     prompt=(
-        "You manage a hotel booking assistant and a"
-        "flight booking assistant. Assign work to them."
+        "You act as knowledge base who helps the client synthesize information from multiple sources and analyze them.You manage a worker directory assistant."
+        "Directory assistent will have information on the team functions and it's member. Assign work to them to answer the request."
     )
 ).compile()
 
@@ -43,7 +53,7 @@ for chunk in supervisor.stream(
         "messages": [
             {
                 "role": "user",
-                "content": "book a flight from BOS to JFK and a stay at McKittrick Hotel"
+                "content": "What are the members of Backend Engineering team?"
             }
         ]
     }
