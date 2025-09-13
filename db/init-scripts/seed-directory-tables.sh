@@ -2,24 +2,24 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-  CREATE TABLE team (
+  CREATE TABLE teams (
       id SERIAL PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
       team_function VARCHAR(255)
   );
 
-  CREATE TABLE "user" (
+  CREATE TABLE "users" (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     role VARCHAR(100),
     team_id INT NOT NULL,
     CONSTRAINT fk_team
         FOREIGN KEY (team_id)
-        REFERENCES team (id)
+        REFERENCES teams (id)
         ON DELETE CASCADE
   );
 
-  INSERT INTO team (name, team_function)
+  INSERT INTO teams (name, team_function)
   VALUES
   ('Frontend Engineering', 'Builds and maintains user interfaces and client-side logic'),
   ('Backend Engineering', 'Develops server-side logic, APIs, and data processing services'),
@@ -34,7 +34,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
   ('Identity Services', 'Builds and maintains authentication, authorization, and user identity management systems');
 
 
-  INSERT INTO "user" (name, role, team_id)
+  INSERT INTO "users" (name, role, team_id)
   VALUES
   ('Alice Johnson', 'PM', 1),
   ('Bob Carter', 'Dev', 1),
