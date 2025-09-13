@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
-set -e
-
+#!/bin/sh
+set -eu
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
   CREATE TABLE teams (
       id SERIAL PRIMARY KEY,
