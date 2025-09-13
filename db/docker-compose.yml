@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: directory
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
+
