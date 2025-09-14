@@ -91,16 +91,27 @@ async def websocket_endpoint(websocket: WebSocket, ticket_id: int, db: Session =
             websocket
         )
 
-        # Create prompt using ticket content
+        # Create enhanced prompt using ticket content
         ticket_prompt = f"""
-        Please evaluate this ticket and provide analysis:
+        Please evaluate this ticket and provide a comprehensive analysis with the following structure:
         
+        TICKET DETAILS:
         Title: {ticket.title}
         Description: {ticket.description}
         Acceptance Criteria: {ticket.acceptance_criteria}
         
-        Please analyze this ticket and provide specific insights about ticket's requirements, relevant information, potential team assignments, and any concise recommendations if needed.
-        The summary of the tickets are not needed.
+        Please provide your analysis in the following format, which each section as it's own paragraph:
+        
+        1. CODE REFERENCES:
+        Identify any technical references, frameworks, libraries, APIs, databases, or code components mentioned in the ticket. Only mention relevant technical references that are explicitly stated or clearly implied - avoid unnecessary mentions.
+        
+        2. RECOMMENDED APPROACH:
+        Provide a concise step-by-step approach to implement this ticket. Focus on the key implementation steps and technical considerations.
+        
+        3. TEAM MEMBER RECOMMENDATIONS:
+        Based on the technical requirements and team expertise, identify specific team members who would be most knowledgeable for this task. Consider the team functions and member roles when making recommendations.
+        
+        Please be concise and focus on actionable insights. Do not provide unnecessary summaries.
         """
 
         # Stream supervisor response
