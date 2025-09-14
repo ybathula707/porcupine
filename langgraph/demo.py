@@ -140,7 +140,7 @@ for chunk in supervisor.stream(
         "messages": [
             {
                 "role": "user",
-                "content": "What changes do I need to make to make to the readme of aikus in order to make it more meaningful for new folks onboarding?"
+                "content": "What updates should i make to the readme of aikus in order to improve onboarding experience for new folks?"
             }
         ]
     }

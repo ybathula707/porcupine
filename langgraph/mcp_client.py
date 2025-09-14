@@ -82,7 +82,8 @@ async def read_project_file_mcp(file_name: str, project_name: str=None, file_pat
     response =  await mcp_agent.ainvoke({
         "messages": [f"Read the contents of {file_name} from the {project_name} project. Return the file contents. You can begin searching for this file at the complete projects directory {FS_BASE_DIRECTORY}. Begin looking inside the {project_name} directory for [{file_name}]"]
     })
-    print_conversation_summary(response)
+    #print_conversation_summary(response)
+    return response
 
 # async def test():
 #     # Get tools from the MCP server
