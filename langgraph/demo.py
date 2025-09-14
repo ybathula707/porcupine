@@ -9,10 +9,10 @@ from langchain_core.tools import tool
 from sqlalchemy import create_engine, text
 import asyncio
 def directory_db_query(query_string):
-    print("executing db query for directory db: " + query_string)
+    print("executing db query fordirectory  db: " + query_string)
     results = []
     try:
-        engine = create_engine('postgresql+psycopg2://admin:example@localhost:5432/directory')
+        engine = create_engine('postgresql+psycopg2://admin:example@localhost:5432/hackathon')
         connection = engine.connect()
         my_query = text(query_string)
         results = connection.execute(my_query).fetchall()
@@ -140,7 +140,7 @@ for chunk in supervisor.stream(
         "messages": [
             {
                 "role": "user",
-                "content": "What updates should i make to the readme of aikus in order to improve onboarding experience for new folks?"
+                "content": "What updates should i make to the readme of aiskus in order to improve onboarding experience for new folks? List the people who are on the backend team."
             }
         ]
     }
