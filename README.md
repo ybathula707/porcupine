@@ -63,3 +63,26 @@ docker compose -f app/docker-compose.yml up
 - Local: http://localhost:8000/docs
 - Docker: http://localhost/docs
 - Endpoint: `POST /tickets` - Evaluate tickets with title, description, and acceptance criteria
+
+## Frontend Application
+
+The `/frontend` folder contains a Next.js application with a user interface for ticket content evaluation.
+
+### Running the Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend will be available at: http://localhost:3000
+
+### Frontend Features
+- Clean, responsive UI for ticket evaluation
+- Form with title (text input), description (textarea), and acceptance criteria (textarea)
+- Real-time form validation
+- Success/error feedback
+- Automatic form reset after successful submission
+- Connects to FastAPI backend on port 8000
+
+**Note:** Ensure the FastAPI backend is running on port 8000 for the frontend to work properly.
