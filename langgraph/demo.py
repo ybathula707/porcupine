@@ -124,7 +124,7 @@ directory_assistant = create_react_agent(
 )
 
 supervisor = create_supervisor(
-    agents=[repo_assistant],
+    agents=[repo_assistant, directory_assistant],
     model=ChatOpenAI(model="gpt-4o"),
     prompt=(
         "You act as knowledge base who helps the client synthesize information from multiple sources and analyze them.You manage a worker directory assistant."
@@ -140,7 +140,7 @@ for chunk in supervisor.stream(
         "messages": [
             {
                 "role": "user",
-                "content": "What changes do I need to make to asikus project in order to make the project's client asychronous? I am looking at the question_processor.py file of the project."
+                "content": "What changes do I need to make to make to the readme of aikus in order to make it more meaningful for new folks onboarding?"
             }
         ]
     }
@@ -149,21 +149,3 @@ for chunk in supervisor.stream(
     print("\n")
 
 
-
-# async def test_sync_mcp_file_summary():
-#     """Test the synchronous mcp_file_summary function"""
-#     print("Testing sync mcp_file_summary...")
-    
-#     try:
-#         result = mcp_file_summary("README.md", "aiskus")
-#         print(result)
-#     except Exception as e:
-#         print(f"ERROR: {e}")
-#         import traceback
-#         traceback.print_exc()
-
-# # Run the test
-# if __name__ == "__main__":
-#     # Comment out your supervisor stream for now and run this test
-#     print("Running MCP file summary test...")
-#     test_sync_mcp_file_summary()
