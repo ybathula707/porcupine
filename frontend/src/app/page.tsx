@@ -165,7 +165,7 @@ export default function Home() {
             {/* Title Field */}
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-900 mb-2">
-                Title *
+                Title
               </label>
               <input
                 type="text"
@@ -173,7 +173,6 @@ export default function Home() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                required
                 className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter ticket title"
               />
@@ -199,14 +198,13 @@ export default function Home() {
             {/* Acceptance Criteria Field */}
             <div>
               <label htmlFor="acceptance_criteria" className="block text-sm font-medium text-gray-900 mb-2">
-                Acceptance Criteria *
+                Acceptance Criteria
               </label>
               <textarea
                 id="acceptance_criteria"
                 name="acceptance_criteria"
                 value={formData.acceptance_criteria}
                 onChange={handleInputChange}
-                required
                 rows={6}
                 className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                 placeholder="Enter acceptance criteria (e.g., numbered list of requirements)"
