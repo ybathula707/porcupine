@@ -1,0 +1,5 @@
+services:
+  porcupine:
+    image: porcupine:latest
+    ports:
+      - 80:80

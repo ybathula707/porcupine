@@ -1,5 +1,5 @@
 services:
-  directory_db:
+  db:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
