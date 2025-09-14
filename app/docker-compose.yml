@@ -1,5 +1,9 @@
 services:
-  db:
+  porcupine:
+    image: porcupine:latest
+    ports:
+      - 80:80
+  tickets_db:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
