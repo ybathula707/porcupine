@@ -1,5 +1,6 @@
 from typing import Union
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
 
@@ -8,6 +9,15 @@ from db.models import Base, Ticket
 from schemas import TicketCreate, TicketResponse
 
 app = FastAPI(title="Ticket Management API", version="1.0.0")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize database tables on startup
 @app.on_event("startup")
