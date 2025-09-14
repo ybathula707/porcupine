@@ -9,6 +9,7 @@ from datetime import datetime
 
 from db.database import get_db, engine
 from db.models import Base, Ticket
+from agents import supervisor
 from schemas import TicketCreate, TicketResponse
 
 app = FastAPI(title="Ticket Management API", version="1.0.0")
@@ -63,20 +64,52 @@ def read_root():
     return {"Hello": "World", "message": "Ticket Management API is running"}
 
 @app.websocket("/ws/ticket/{ticket_id}/eval")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(websocket: WebSocket, ticket_id: int, db: Session = Depends(get_db)):
     """
-    WebSocket endpoint for streaming real-time events to the frontend.
+    WebSocket endpoint for streaming real-time events to the frontend for a specific ticket.
     """
     await manager.connect(websocket)
     try:
-        await manager.broadcast(
-            json.dumps({
-                "type": "ticket_evaluation_progress",
-                "message": "Saving to database...",
-                "timestamp": datetime.now().isoformat()
-            })
-        )
+        # Query the ticket from the database
+        ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
+        if not ticket:
+            await manager.send_personal_message(
+                json.dumps({
+                    "type": "error",
+                    "message": f"Ticket with ID {ticket_id} not found",
+                    "timestamp": datetime.now().isoformat()
+                }),
+                websocket
+            )
+            return
         
+        # Send welcome message with ticket information
+        await manager.send_personal_message(
+            json.dumps({
+                "type": "connection",
+                "message": f"Connected to ticket evaluation stream for ticket: {ticket.title}",
+                "ticket_id": ticket.id,
+                "ticket_title": ticket.title,
+                "timestamp": datetime.now().isoformat()
+            }),
+            websocket
+        )
+
+        for chunk in supervisor.compile().stream(
+            {
+                "messages": [
+                    {
+                        "role": "user",
+                        # TODO: create the promp for the supervisor
+                        "content": "What are things the qa team do in my company?"
+                    }
+                ]
+            }
+        ):
+            # TODO: broadcast the chunk content partly to the front end
+            print(chunk)
+            print("\n")
+                
         # Keep connection alive and handle incoming messages
         while True:
             data = await websocket.receive_text()
@@ -84,7 +117,8 @@ async def websocket_endpoint(websocket: WebSocket):
             await manager.send_personal_message(
                 json.dumps({
                     "type": "echo",
-                    "message": f"Received: {data} for ticket {ticket_id}",
+                    "message": f"Received: {data} for ticket {ticket.title} (ID: {ticket_id})",
+                    "ticket_id": ticket_id,
                     "timestamp": datetime.now().isoformat()
                 }),
                 websocket
