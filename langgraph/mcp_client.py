@@ -4,13 +4,14 @@ import os
 import asyncio
 # a dcitionary of server name to configurations
 """
-Env variables you need to set to run this server:
+Env variables you need to set to run this server. Set in your terminal:
 
 FS_BASE_DIRECTORY=absolute path to the file system you want mcp to read from
 OPENAI_API_KEY=duh
 MCP_SERVER_LOCATION=absolute file path of mcp_server, where it's running
 
-TIP: Just put the server in the same place are your test_repos directory. 
+TIP: Just clone the the server in the same place are your test_repos directory.
+porject repo for mcp server: https://github.com/cyanheads/filesystem-mcp-server 
 
 
 /Users/yoshi/Desktop/demo_repos/filesystem-mcp-server/dist/index.js
