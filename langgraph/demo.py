@@ -38,7 +38,7 @@ def list_teams():
 
 def show_team(team_name: str):
     """Gives a description for only one specific team. For multiple teams, need to call this tool repeatedly"""
-    team_query_result = directory_db_query(f"SELECT name, team_function FROM teams WHERE name = {team_name} LIMIT 1")
+    team_query_result = directory_db_query(f"SELECT name, team_function FROM teams WHERE name = '{team_name}' LIMIT 1")
     if len(team_query_result) == 1:
         t = team_query_result[0]
         return f"team {t.name} has the following responsibilities: {t.team_function}"
@@ -55,7 +55,7 @@ repo_assistant = create_react_agent(
 
 directory_assistant = create_react_agent(
     model="openai:gpt-4o",
-    tools=[list_team_users, list_teams],
+    tools=[list_team_users, show_team, list_teams],
     prompt="You are a directory assistant who have knowledge of the available teams, team functions, and members. In order to get team details and members, you have to provide the exact team name from the team list. If the team name closely resembles the team role, you can coerce to your exact team name and note the difference",
     name="directory_assistant"
 )
@@ -74,7 +74,7 @@ for chunk in supervisor.stream(
         "messages": [
             {
                 "role": "user",
-                "content": "What are the members of machine learning and mobile team?"
+                "content": "What are things the qa team do in my company?"
             }
         ]
     }
