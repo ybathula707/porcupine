@@ -59,10 +59,6 @@ async def startup_event():
     except OperationalError as e:
         print(f"Database connection failed: {e}")
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World", "message": "Ticket Management API is running"}
-
 @app.websocket("/ws/ticket/{ticket_id}/eval")
 async def websocket_endpoint(websocket: WebSocket, ticket_id: int, db: Session = Depends(get_db)):
     """
@@ -95,30 +91,84 @@ async def websocket_endpoint(websocket: WebSocket, ticket_id: int, db: Session =
             websocket
         )
 
-        for chunk in supervisor.compile().stream(
-            {
-                "messages": [
-                    {
-                        "role": "user",
-                        # TODO: create the promp for the supervisor
-                        "content": "What are things the qa team do in my company?"
-                    }
-                ]
-            }
-        ):
-            # TODO: broadcast the chunk content partly to the front end
-            print(chunk)
-            print("\n")
-                
-        # Keep connection alive and handle incoming messages
-        while True:
-            data = await websocket.receive_text()
-            # Echo back any messages (can be extended for specific functionality)
+        # Create prompt using ticket content
+        ticket_prompt = f"""
+        Please evaluate this ticket and provide analysis:
+        
+        Title: {ticket.title}
+        Description: {ticket.description}
+        Acceptance Criteria: {ticket.acceptance_criteria}
+        
+        Please analyze this ticket and provide insights about the requirements, potential team assignments, and any recommendations.
+        Only include the recommendations, the summary of the tickets are not needed. Be concise if possible. Format the response with new lines. Avoid big paragraphs
+        """
+
+        # Stream supervisor response
+        try:
+            for chunk in supervisor.compile().stream(
+                {
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": ticket_prompt
+                        }
+                    ]
+                }
+            ):
+                # Extract meaningful content from the chunk - only AIMessage instances
+                if 'supervisor' in chunk and 'messages' in chunk['supervisor']:
+                    messages = chunk['supervisor']['messages']
+                    for message in messages:
+                        # Only process AIMessage instances, skip ToolMessage
+                        if (hasattr(message, 'content') and message.content and 
+                            hasattr(message, '__class__') and 
+                            message.__class__.__name__ == 'AIMessage'):
+                            await manager.send_personal_message(
+                                json.dumps({
+                                    "type": "ticket_evaluation_progress",
+                                    "message": message.content,
+                                    "ticket_id": ticket.id,
+                                    "timestamp": datetime.now().isoformat()
+                                }),
+                                websocket
+                            )
+                                # Extract meaningful content from the chunk - only AIMessage instances
+                if 'directory_assistant' in chunk and 'messages' in chunk['directory_assistant']:
+                    messages = chunk['directory_assistant']['messages']
+                    for message in messages:
+                        # Only process AIMessage instances, skip ToolMessage
+                        if (hasattr(message, 'content') and message.content and 
+                            hasattr(message, '__class__') and 
+                            message.__class__.__name__ == 'AIMessage'):
+                            await manager.send_personal_message(
+                                json.dumps({
+                                    "type": "directory_assistant_evaluation_progress",
+                                    "message": message.content,
+                                    "ticket_id": ticket.id,
+                                    "timestamp": datetime.now().isoformat()
+                                }),
+                                websocket
+                            )
+
+            # Send completion message
             await manager.send_personal_message(
                 json.dumps({
-                    "type": "echo",
-                    "message": f"Received: {data} for ticket {ticket.title} (ID: {ticket_id})",
-                    "ticket_id": ticket_id,
+                    "type": "ticket_evaluation_complete",
+                    "message": f"Ticket evaluation completed for: {ticket.title}",
+                    "ticket_id": ticket.id,
+                    "timestamp": datetime.now().isoformat()
+                }),
+                websocket
+            )
+            # Disconnect when done
+            manager.disconnect(websocket)
+
+        except Exception as e:
+            await manager.send_personal_message(
+                json.dumps({
+                    "type": "ticket_evaluation_error",
+                    "message": f"Error during ticket evaluation: {str(e)}",
+                    "ticket_id": ticket.id,
                     "timestamp": datetime.now().isoformat()
                 }),
                 websocket
