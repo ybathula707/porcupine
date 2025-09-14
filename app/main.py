@@ -99,8 +99,8 @@ async def websocket_endpoint(websocket: WebSocket, ticket_id: int, db: Session =
         Description: {ticket.description}
         Acceptance Criteria: {ticket.acceptance_criteria}
         
-        Please analyze this ticket and provide insights about the requirements, potential team assignments, and any recommendations.
-        Only include the recommendations, the summary of the tickets are not needed. Be concise if possible. Format the response with new lines. Avoid big paragraphs
+        Please analyze this ticket and provide specific insights about ticket's requirements, relevant information, potential team assignments, and any concise recommendations if needed.
+        The summary of the tickets are not needed.
         """
 
         # Stream supervisor response
@@ -132,7 +132,8 @@ async def websocket_endpoint(websocket: WebSocket, ticket_id: int, db: Session =
                                 }),
                                 websocket
                             )
-                                # Extract meaningful content from the chunk - only AIMessage instances
+
+                # Extract meaningful content from the chunk - only AIMessage instances
                 if 'directory_assistant' in chunk and 'messages' in chunk['directory_assistant']:
                     messages = chunk['directory_assistant']['messages']
                     for message in messages:
