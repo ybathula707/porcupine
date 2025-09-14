@@ -79,12 +79,12 @@ async def read_project_file_mcp(file_name: str, project_name: str=None, file_pat
     mcp_agent = create_react_agent("openai:gpt-4o", tools)
 
     response =  await mcp_agent.ainvoke({
-        "messages": [f"Read the contents of {file_name} from the {project_name} project. Tell me a summary of the contents. All projects are located at {FS_BASE_DIRECTORY}"]
+        "messages": [f"Read the contents of {file_name} from the {project_name} project. Return the file contents. You can begin searching for this file at the complete projects directory {FS_BASE_DIRECTORY}. Begin looking inside the {project_name} directory for [{file_name}]"]
     })
     print_conversation_summary(response)
 
-async def test():
-    # Get tools from the MCP server
-   response = await read_project_file_mcp(file_name="README.md", project_name="simple-webapp-flask" )
-
-asyncio.run(test())
+# async def test():
+#     # Get tools from the MCP server
+#    response = await read_project_file_mcp(file_name="question_processor.py", project_name="aiskus" )
+#    print_conversation_summary(response)
+# asyncio.run(test())
