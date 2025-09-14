@@ -1,3 +1,7 @@
 fastapi
 uvicorn
 pydantic
+langchain-mcp-adapters
+langgraph_supervisor
+langchain_openai
+langgraph.prebuilt
