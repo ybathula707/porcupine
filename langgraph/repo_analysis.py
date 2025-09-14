@@ -46,7 +46,9 @@ def repo_analyzer_simple(directory_path: str = FS_BASE_DIRECTORY) -> str:
             'index.ts', 'main.ts', 'app.ts', 'server.ts',
             'Main.java', 'Application.java', 'App.java',
             'Program.cs', 'Main.cs', 'Startup.cs',
-            'main.go', 'main.rs', 'index.php', 'main.php'
+            'main.go', 'main.rs', 'index.php', 'main.php',
+            #Readme
+            'README.md', 'db.py'
         }
         
         for item in repo_path.rglob('*'):
@@ -131,8 +133,8 @@ def repo_analyzer_simple(directory_path: str = FS_BASE_DIRECTORY) -> str:
     return '\n'.join(reports)
 
 
-# Usage
-if __name__ == "__main__":
+#Usage
+# if __name__ == "__main__":
 
-    result = repo_analyzer_simple(FS_BASE_DIRECTORY)
-    print(result)
+#     result = repo_analyzer_simple(FS_BASE_DIRECTORY)
+#     print(result)

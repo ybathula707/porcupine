@@ -6,6 +6,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 
+### Langgraph setup
+```
+pip install -U langgraph langsmith langgraph_supervisor
+pip install -U "langchain[openai]"
+```
+
+
 ### Database setup
 directory db setup:
 ```
